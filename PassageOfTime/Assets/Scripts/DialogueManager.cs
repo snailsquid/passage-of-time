@@ -8,6 +8,7 @@ public class DialogueManager : MonoBehaviour
     public TextAsset inkAsset;
     Story activeStory;
     string currentSpeaker;
+    CameraManager cameraManager;
     enum DialogueState
     {
         OUT, // Not in a dialogue at all
@@ -15,6 +16,23 @@ public class DialogueManager : MonoBehaviour
         NORMAL // Text only, can only continue
     }
     DialogueState state;
+
+    void SetSingletons()
+    {
+        cameraManager = CameraManager.instance;
+    }
+    void RegisterVariableChange()
+    {
+        activeStory.ObserveVariable("camera", (string varName, object value) =>
+        {
+            cameraManager.ChangeCamera((string)value);
+        });
+    }
+    void Start()
+    {
+        SetSingletons();
+        RegisterVariableChange();
+    }
     void DisplayChoice()
     {
         if (activeStory.currentChoices.Count > 0)
