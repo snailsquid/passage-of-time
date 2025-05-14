@@ -16,6 +16,7 @@ public class DialogueManager : MonoBehaviour
         NORMAL // Text only, can only continue
     }
     DialogueState state;
+    
 
     void SetSingletons()
     {
@@ -32,6 +33,7 @@ public class DialogueManager : MonoBehaviour
     {
         SetSingletons();
         RegisterVariableChange();
+        BeginDialogue(inkAsset);
     }
     void DisplayChoice()
     {
