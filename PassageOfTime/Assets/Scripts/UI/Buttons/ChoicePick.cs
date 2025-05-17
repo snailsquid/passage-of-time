@@ -14,4 +14,8 @@ public class ChoicePick : MonoBehaviour
         dialogueManager = DialogueManager.instance;
         button.onClick.AddListener(() => dialogueManager.PickChoice(choiceIndex));
     }
+    public void SetIndex(int index)
+    {
+        choiceIndex = index;
+    }
 }
