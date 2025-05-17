@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Ink.Runtime;
 
 public class DialogueUIManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class DialogueUIManager : MonoBehaviour
     public TextMeshProUGUI messageTMP;
     public GameObject nextButton;
     public GameObject choicesParent;
-    public GameObject choiceButtonPrefab; 
+    public GameObject choiceButtonPrefab;
     public enum DialogueType
     {
         SingleChoice,
@@ -25,7 +26,7 @@ public class DialogueUIManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void SetDialogue(DialogueType type, string speaker, string message, List<string> responses = null)
+    public void SetDialogue(DialogueType type, string speaker, string message, List<Choice> responses = null)
     {
         speakerTMP.text = speaker;
         messageTMP.text = message;
@@ -42,14 +43,16 @@ public class DialogueUIManager : MonoBehaviour
             nextButton.SetActive(false);
             choicesParent.SetActive(true);
 
-            foreach (string response in responses)
+            for (int i = 0; i < responses.Count; i++)
+
             {
+                string response = responses[i].text;
                 GameObject choiceObj = Instantiate(choiceButtonPrefab, choicesParent.transform);
                 TextMeshProUGUI choiceText = choiceObj.GetComponentInChildren<TextMeshProUGUI>();
                 choiceText.text = response;
 
-                Button button = choiceObj.GetComponent<Button>();
-                button.onClick.AddListener(() => OnChoiceSelected(response));
+                ChoicePick cp = choiceObj.AddComponent<ChoicePick>();
+                cp.SetIndex(i);
             }
         }
     }
@@ -62,9 +65,4 @@ public class DialogueUIManager : MonoBehaviour
         }
     }
 
-    private void OnChoiceSelected(string response)
-    {
-        Debug.Log("User chose: " + response);
-       
-    }
 }

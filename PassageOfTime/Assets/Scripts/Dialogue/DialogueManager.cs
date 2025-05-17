@@ -9,6 +9,7 @@ public class DialogueManager : MonoBehaviour
     Story activeStory;
     string currentSpeaker;
     CameraManager cameraManager;
+    DialogueUIManager dialogueUI;
     enum DialogueState
     {
         OUT, // Not in a dialogue at all
@@ -16,11 +17,12 @@ public class DialogueManager : MonoBehaviour
         NORMAL // Text only, can only continue
     }
     DialogueState state;
-    
+
 
     void SetSingletons()
     {
         cameraManager = CameraManager.instance;
+        dialogueUI = DialogueUIManager.instance;
     }
     void RegisterVariableChange()
     {
@@ -67,8 +69,15 @@ public class DialogueManager : MonoBehaviour
 
             List<string> tags = activeStory.currentTags;
             currentSpeaker = tags[0];
-            DisplayContent();
-            DisplayChoice();
+            state = DialogueState.NORMAL;
+
+            if (activeStory.currentChoices.Count > 0)
+            {
+                state = DialogueState.CHOICE;
+            }
+            // DisplayContent();
+            // DisplayChoice();
+            dialogueUI.SetDialogue(state == DialogueState.NORMAL ? DialogueUIManager.DialogueType.SingleChoice : DialogueUIManager.DialogueType.MultipleChoice, currentSpeaker, activeStory.currentText, activeStory.currentChoices);
         }
         else if (state != DialogueState.OUT && state != DialogueState.CHOICE)
         {
