@@ -29,6 +29,8 @@ public class DialogueUIManager : MonoBehaviour
     public void SetDialogue(DialogueType type, string speaker, string message, List<Choice> responses = null)
     {
         speakerTMP.text = speaker;
+        if (message == "Narrator")
+            message = "";
         messageTMP.text = message;
 
         ClearChoices();

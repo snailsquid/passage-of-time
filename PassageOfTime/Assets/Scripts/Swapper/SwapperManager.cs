@@ -13,6 +13,8 @@ public class SwapperManager : Singleton<SwapperManager>
     }
     public void SwapCharacter(string imageName)
     {
+        if (imageName == "Narrator")
+            imageName = "";
         characterSwapper.Swap(FolderManager.GetCharacterSprite(imageName));
     }
     void Start()

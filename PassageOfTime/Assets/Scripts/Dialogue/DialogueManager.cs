@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Ink;
 using Ink.Runtime;
 using UnityEngine;
 
@@ -8,8 +9,10 @@ public class DialogueManager : MonoBehaviour
     public TextAsset inkAsset;
     Story activeStory;
     string currentSpeaker;
+    string currentEnvironment;
     CameraManager cameraManager;
     DialogueUIManager dialogueUI;
+    SwapperManager swapperManager;
     enum DialogueState
     {
         OUT, // Not in a dialogue at all
@@ -23,19 +26,16 @@ public class DialogueManager : MonoBehaviour
     {
         cameraManager = CameraManager.instance;
         dialogueUI = DialogueUIManager.instance;
-    }
-    void RegisterVariableChange()
-    {
-        activeStory.ObserveVariable("camera", (string varName, object value) =>
-        {
-            cameraManager.ChangeCamera((string)value);
-        });
+        swapperManager = SwapperManager.Instance;
     }
     void Start()
     {
         SetSingletons();
-        RegisterVariableChange();
         BeginDialogue(inkAsset);
+        activeStory.onError += (string message, ErrorType type) =>
+        {
+            Debug.Log("story error : " + message + " " + type);
+        };
     }
     void DisplayChoice()
     {
@@ -68,7 +68,13 @@ public class DialogueManager : MonoBehaviour
             activeStory.Continue();
 
             List<string> tags = activeStory.currentTags;
-            currentSpeaker = tags[0];
+            if (tags.Count >= 1)
+                currentSpeaker = tags[0];
+            else
+                currentSpeaker = "Narrator";
+            Debug.Log("speaker is " + currentSpeaker);
+            if (tags.Count >= 2)
+                currentEnvironment = tags[1];
             state = DialogueState.NORMAL;
 
             if (activeStory.currentChoices.Count > 0)
@@ -78,6 +84,8 @@ public class DialogueManager : MonoBehaviour
             // DisplayContent();
             // DisplayChoice();
             dialogueUI.SetDialogue(state == DialogueState.NORMAL ? DialogueUIManager.DialogueType.SingleChoice : DialogueUIManager.DialogueType.MultipleChoice, currentSpeaker, activeStory.currentText, activeStory.currentChoices);
+            swapperManager.SwapCharacter(currentSpeaker);
+            swapperManager.SwapBackground(currentEnvironment);
         }
         else if (state != DialogueState.OUT && state != DialogueState.CHOICE)
         {
