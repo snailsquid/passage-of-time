@@ -23,17 +23,14 @@ namespace Utils
             var closest = hits[0];
             foreach (var t in hits)
             {
+                Debug.Log(t.transform.name);
                 if (t.transform.position.z < closest.transform.position.z && closest.transform.GetComponent<T>() != null)
                 {
                     closest = t;
                 }
             }
 
-            if (closest.transform.GetComponent<T>() != null)
-            {
-                return closest.transform.GetComponent<T>();
-            }
-            return default(T);
+            return closest.transform.GetComponent<T>() != null ? closest.transform.GetComponent<T>() : default(T);
         }
         
     }

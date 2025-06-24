@@ -21,31 +21,41 @@ namespace Mechanic.Grab
             GrabHoldingState = new GrabHoldingState(this);
             GrabLetGoState = new GrabLetGoState(this);
             Raycast = new Raycast(Camera.main);
+            
+            ChangeState(GrabLetGoState);
         }
 
-        private void OnPointer(bool isDown, Vector2 position)
+        private void OnPointer(bool isDown)
         {
             switch (isPointerDown)
             {
                 case false when isDown:
                     isPointerDown = true;
-                    _currentGrabState.OnPointer(true, position);
+                    _currentGrabState.OnPointer(true);
                     break;
                 case true when !isDown:
                     isPointerDown = false;
-                    _currentGrabState.OnPointer(false, position);
+                    _currentGrabState.OnPointer(false);
                     break;
             }
         }
 
         public void SetGrabObject(Grabbable obj)
         {
-            this.grabObject = obj;
+            if (obj == null && grabObject != null)
+            {
+                grabObject.isGrabbed = false;
+            }
+            else if(obj != null)
+            {
+                grabObject = obj;
+                grabObject.isGrabbed = true;
+            }
         }
         
         public void ChangeState(IGrabState state)
         {
-            _currentGrabState.Exit();
+            _currentGrabState?.Exit();
             _currentGrabState = state;
             _currentGrabState.Enter();
         }

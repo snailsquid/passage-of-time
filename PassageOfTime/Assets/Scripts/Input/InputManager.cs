@@ -8,14 +8,14 @@ namespace Input
     public class InputManager : Singleton<InputManager>
     {
         public InputActionAsset pointerAsset;
-        public static event Action<bool, Vector2> OnPointerAction;
+        public static event Action<bool> OnPointerAction;
         public Vector2 pointerPosition;
 
         private void OnEnable()
         {
             pointerAsset.Enable();
-            pointerAsset["Hold"].performed += (ctx) => OnPointer(true, ctx);
-            pointerAsset["Hold"].canceled += (ctx) => OnPointer(false, ctx);
+            pointerAsset["Hold"].performed += (ctx) => OnPointer(true);
+            pointerAsset["Hold"].canceled += (ctx) => OnPointer(false);
         }
 
         public void Update()
@@ -28,9 +28,9 @@ namespace Input
             pointerAsset.Disable();
         }
 
-        private void OnPointer(bool pointerDown, InputAction.CallbackContext ctx)
+        private void OnPointer(bool pointerDown)
         {
-            OnPointerAction.Invoke(pointerDown, ctx.ReadValue<Vector2>());
+            OnPointerAction.Invoke(pointerDown);
         }
     }
 }

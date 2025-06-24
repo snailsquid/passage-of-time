@@ -6,7 +6,7 @@ namespace Mechanic.Grab
     {
         public void Trigger(Grabbable grab)
         {
-            
+            if (grab == null) return;
         }
     }
 }
