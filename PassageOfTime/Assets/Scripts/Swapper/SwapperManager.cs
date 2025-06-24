@@ -9,6 +9,7 @@ public class SwapperManager : Singleton<SwapperManager>
 
     public void SwapBackground(string imageName)
     {
+        Debug.Log(imageName);
         backgroundSwapper.Swap(FolderManager.GetBackgroundSprite(imageName));
     }
     public void SwapCharacter(string imageName)
